@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos | RADIOGALAXIA</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header header--scrolled" id="header">
+        <div class="header__top-bar"><p class="header__top-text">Frete grátis Brasil • Cupom <span>COSMOS10</span></p></div>
+        <nav class="nav" id="nav">
+            <div class="nav__container">
+                <a href="index.html" class="nav__logo"><span class="nav__logo-icon">◆</span><span>RADIO<span class="nav__logo-highlight">GALAXIA</span></span></a>
+                <ul class="nav__menu" id="navMenu">
+                    <li><a href="index.html" class="nav__link">Início</a></li>
+                    <li><a href="produtos.html" class="nav__link">Loja</a></li>
+                    <li><a href="sobre.html" class="nav__link">Sobre</a></li>
+                    <li><a href="contato.html" class="nav__link">Contato</a></li>
+                    <li><a href="faq.html" class="nav__link">FAQ</a></li>
+                </ul>
+                <div class="nav__actions">
+                    <a href="favoritos.html" class="nav__icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="nav__badge" id="favBadge">0</span></a>
+                    <a href="carrinho.html" class="nav__icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="nav__badge" id="cartBadge">0</span></a>
+                    <button class="nav__hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main style="padding-top:130px;">
+        <section class="section">
+            <div class="container">
+                <h1 class="section__title">Seus <span>Favoritos</span></h1>
+                <div class="products__grid" id="favoritesGrid"></div>
+                <p id="noFavs" style="text-align:center;color:#888;display:none;">Nenhum favorito ainda.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer"><div class="footer__bottom container"><p>&copy; 2026 RADIOGALAXIA.</p></div></footer>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/produtos.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/favoritos.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const favProds = window.RADIOGALAXIA?.favorites?.getFavoriteProducts() || [];
+            const grid = document.getElementById('favoritesGrid');
+            const noFavs = document.getElementById('noFavs');
+            if (favProds.length === 0) { noFavs.style.display = 'block'; }
+            else { grid.innerHTML = favProds.map(p => window.RADIOGALAXIA.renderProductCard(p)).join(''); }
+        });
+    </script>
+</body>
+</html>
