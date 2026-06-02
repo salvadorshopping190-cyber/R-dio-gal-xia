@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho | RADIOGALAXIA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪐</text></svg>">
+</head>
+<body>
+    <header class="header header--scrolled" id="header">
+        <div class="header__top-bar"><p class="header__top-text">Frete grátis Brasil • Cupom <span>COSMOS10</span></p></div>
+        <nav class="nav" id="nav">
+            <div class="nav__container">
+                <a href="index.html" class="nav__logo"><span class="nav__logo-icon">◆</span><span>RADIO<span class="nav__logo-highlight">GALAXIA</span></span></a>
+                <ul class="nav__menu" id="navMenu">
+                    <li><a href="index.html" class="nav__link">Início</a></li>
+                    <li><a href="produtos.html" class="nav__link">Loja</a></li>
+                    <li><a href="sobre.html" class="nav__link">Sobre</a></li>
+                    <li><a href="contato.html" class="nav__link">Contato</a></li>
+                    <li><a href="faq.html" class="nav__link">FAQ</a></li>
+                </ul>
+                <div class="nav__actions">
+                    <a href="favoritos.html" class="nav__icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="nav__badge" id="favBadge">0</span></a>
+                    <a href="carrinho.html" class="nav__icon-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg><span class="nav__badge" id="cartBadge">0</span></a>
+                    <button class="nav__hamburger" id="hamburger"><span></span><span></span><span></span></button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main style="padding-top:130px;min-height:60vh;">
+        <section class="section">
+            <div class="container">
+                <h1 class="section__title">Seu <span>Carrinho</span></h1>
+                <div id="cartContent"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__bottom container" style="border-top:none;padding-top:40px;">
+            <p>&copy; 2026 RADIOGALAXIA.</p>
+        </div>
+    </footer>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="js/produtos.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/favoritos.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        function renderCart() {
+            const content = document.getElementById('cartContent');
+            const cart = window.RADIOGALAXIA?.cart;
+            if (!cart) return;
+            const items = cart.getItems();
+            if (items.length === 0) {
+                content.innerHTML = `<div style="text-align:center;padding:60px;"><p style="font-size:4rem;">🛒</p><h2>Carrinho vazio</h2><a href="produtos.html" class="btn btn--primary mt-20">Explorar Loja</a></div>`;
+                return;
+            }
+            const subtotal = cart.getTotal();
+            const frete = subtotal >= 299 ? 0 : 29.90;
+            const total = subtotal + frete;
+            content.innerHTML = `
+                <div style="display:grid;grid-template-columns:1fr 350px;gap:30px;">
+                    <div>
+                        ${items.map(item => `
+                            <div style="display:flex;gap:15px;background:#1a1a1a;padding:15px;border-radius:12px;margin-bottom:12px;align-items:center;">
+                                <span style="font-size:3rem;">${item.emoji}</span>
+                                <div style="flex:1;"><strong>${item.nome}</strong><p style="color:#888;font-size:0.8rem;">${item.cor} / ${item.tamanho}</p><p style="color:#a78bfa;">R$${item.preco.toFixed(2)}</p></div>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <button class="btn btn--sm cart-qty-dec" data-key="${item.key}" style="padding:4px 8px;background:#333;color:white;border-radius:4px;">−</button>
+                                    <span>${item.quantidade}</span>
+                                    <button class="btn btn--sm cart-qty-inc" data-key="${item.key}" style="padding:4px 8px;background:#333;color:white;border-radius:4px;">+</button>
+                                </div>
+                                <button class="btn btn--sm cart-remove" data-key="${item.key}" style="color:#ef4444;">✕</button>
+                            </div>`).join('')}
+                        <button class="btn btn--outline btn--sm" id="clearCartBtn">🗑️ Limpar Carrinho</button>
+                    </div>
+                    <div style="background:#1a1a1a;padding:24px;border-radius:16px;position:sticky;top:140px;">
+                        <h3 style="font-family:'Orbitron';">Resumo</h3>
+                        <div style="display:flex;justify-content:space-between;margin:8px 0;"><span>Subtotal</span><span>R$${subtotal.toFixed(2)}</span></div>
+                        <div style="display:flex;justify-content:space-between;margin:8px 0;"><span>Frete</span><span>${frete===0?'<span style="color:#10b981;">Grátis</span>':'R$'+frete.toFixed(2)}</span></div>
+                        <hr style="border-color:#333;margin:15px 0;">
+                        <div style="display:flex;justify-content:space-between;font-size:1.3rem;font-weight:700;"><span>Total</span><span style="color:#a78bfa;">R$${total.toFixed(2)}</span></div>
+                        <div style="margin-top:15px;display:flex;gap:8px;">
+                            <input type="text" id="cupomInput" placeholder="Cupom" style="flex:1;padding:10px;background:#0a0a0a;border:1px solid #333;border-radius:20px;color:white;">
+                            <button class="btn btn--sm btn--primary" id="applyCupomBtn">Aplicar</button>
+                        </div>
+                        <p id="cupomMsg" style="font-size:0.8rem;margin-top:6px;"></p>
+                        <button class="btn btn--primary btn--block mt-20" id="checkoutBtn">Finalizar Compra</button>
+                        <p style="text-align:center;font-size:0.75rem;color:#888;margin-top:8px;">Pix • Cartão • Até 3x sem juros</p>
+                    </div>
+                </div>`;
+
+            content.querySelectorAll('.cart-qty-dec').forEach(b => b.addEventListener('click', () => {
+                const item = items.find(i => i.key === b.dataset.key);
+                if (item && item.quantidade > 1) { cart.updateQuantity(b.dataset.key, item.quantidade - 1); renderCart(); }
+            }));
+            content.querySelectorAll('.cart-qty-inc').forEach(b => b.addEventListener('click', () => {
+                const item = items.find(i => i.key === b.dataset.key);
+                if (item) { cart.updateQuantity(b.dataset.key, item.quantidade + 1); renderCart(); }
+            }));
+            content.querySelectorAll('.cart-remove').forEach(b => b.addEventListener('click', () => { cart.removeItem(b.dataset.key); renderCart(); showToast('Item removido.'); }));
+            document.getElementById('clearCartBtn')?.addEventListener('click', () => { if(confirm('Limpar carrinho?')) { cart.clearCart(); renderCart(); } });
+            document.getElementById('applyCupomBtn')?.addEventListener('click', () => {
+                const codigo = document.getElementById('cupomInput').value.trim();
+                const resultado = cart.aplicarCupom(codigo);
+                document.getElementById('cupomMsg').innerHTML = resultado.valido ? `<span style="color:#10b981;">${resultado.mensagem}</span>` : `<span style="color:#ef4444;">${resultado.mensagem}</span>`;
+            });
+            document.getElementById('checkoutBtn')?.addEventListener('click', () => { showToast('Redirecionando ao checkout... 🚀'); setTimeout(() => alert('Checkout simulado!\nTotal: R$'+total.toFixed(2)), 500); });
+        }
+        document.addEventListener('DOMContentLoaded', renderCart);
+        window.addEventListener('cartUpdated', renderCart);
+    </script>
+</body>
+</html>
